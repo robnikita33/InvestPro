@@ -3,275 +3,592 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InvestPro 2026 — @yanickdr</title>
+    <title>InvestPro 2026</title>
 
-    <meta name="description" content="InvestPro 2026 — Полный гид по инвестициям для подростков. Узнай, как начать инвестировать с 14 лет, что такое сложный процент и как заработать на акциях. Проект от @yanickdr.">
-    <meta name="keywords" content="инвестиции для школьников, финансовая грамотность, как заработать подростку, акции, облигации, сложный процент, InvestPro, Yanickdr">
+    <meta name="description" content="InvestPro 2026 — Полный гид по инвестициям для        подростков. Узнай, как начать инвестировать с 14 лет, что такое сложный процент и как заработать на акциях. Проект от @yanickdr.">
+    <meta name="keywords" content="инвестиции для школьников, Нараева, Дробин, финансовая грамотность, как заработать подростку, акции, облигации, сложный процент, InvestPro, Yanickdr">
     <meta name="author" content="@yanickdr">
     <meta name="robots" content="index, follow">
     
+    <meta name="description" content="InvestPro 2026 — Полный гид по инвестициям для подростков. Узнай, как начать инвестировать с 14 лет, что такое сложный процент и как заработать на акциях.">
+    <meta name="keywords" content="инвестиции для школьников, финансовая грамотность, как заработать подростку, акции, облигации, сложный процент, InvestPro">
+    <meta name="robots" content="index, follow">
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        /* CSS ПЕРЕМЕННЫЕ ДЛЯ ТЕМ */
         :root {
             --bg: #0b0b0f;
             --accent: #0071e3;
             --card-bg: rgba(255, 255, 255, 0.05);
             --text: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.6);
             --success: #34c759;
             --danger: #ff3b30;
+            --warning: #ffd60a;
+            --border: rgba(255, 255, 255, 0.1);
+            --nav-bg: rgba(20, 20, 25, 0.85);
+            --input-bg: rgba(0, 0, 0, 0.3);
+            --modal-bg: #141419;
         }
 
-        body, html { margin: 0; padding: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow: hidden; }
+        /* СВЕТЛАЯ ТЕМА */
+        body.light-theme {
+            --bg: #f5f5f7;
+            --card-bg: #ffffff;
+            --text: #1d1d1f;
+            --text-muted: rgba(0, 0, 0, 0.5);
+            --border: rgba(0, 0, 0, 0.08);
+            --nav-bg: rgba(255, 255, 255, 0.85);
+            --input-bg: #f0f0f0;
+            --modal-bg: #ffffff;
+        }
+
+        body, html { margin: 0; padding: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow: hidden; transition: background 0.5s ease, color 0.5s ease; }
+
+        /* THEME TOGGLE BUTTON */
+        #theme-btn {
+            position: fixed; top: 20px; right: 20px; z-index: 6000;
+            background: var(--card-bg); border: 1px solid var(--border);
+            color: var(--text); width: 45px; height: 45px; border-radius: 50%;
+            font-size: 1.2rem; cursor: pointer; display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: all 0.3s ease;
+        }
+        #theme-btn:hover { transform: scale(1.1); border-color: var(--accent); }
 
         /* WELCOME SCREEN */
         #welcome {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: #000; z-index: 5000;
+            background: var(--bg); z-index: 5000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: transform 0.8s ease-in-out;
+            transition: transform 0.8s cubic-bezier(0.86, 0, 0.07, 1);
         }
         .stock-bg { position: absolute; width: 100%; height: 100%; opacity: 0.3; }
         .welcome-content { z-index: 2; text-align: center; padding: 20px; }
-        .welcome-content h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 10px; }
+        .welcome-content h1 { font-size: 4rem; font-weight: 800; margin-bottom: 10px; text-shadow: 0 0 30px rgba(0,113,227,0.3); }
+        .typewriter-text { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 30px; min-height: 30px; }
+
+        /* БЕГУЩАЯ СТРОКА (TICKER) */
+        .ticker-wrap { width: 100%; overflow: hidden; background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 12px 0; position: fixed; top: 0; left: 0; z-index: 900; display: none; backdrop-filter: blur(10px); }
+        .ticker-move { display: inline-block; white-space: nowrap; animation: ticker 25s linear infinite; }
+        .ticker-item { display: inline-block; margin-right: 40px; font-weight: 800; font-size: 0.9rem; font-family: monospace; }
+        .t-green { color: var(--success); }
+        .t-red { color: var(--danger); }
+        @keyframes ticker { 0% { transform: translate3d(100vw, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
         /* NAVIGATION */
         nav { 
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            background: rgba(20, 20, 25, 0.9); backdrop-filter: blur(20px);
-            display: flex; padding: 10px; z-index: 1000; border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
+            background: var(--nav-bg); backdrop-filter: blur(20px);
+            display: flex; padding: 8px; z-index: 1000; border-radius: 24px;
+            border: 1px solid var(--border); max-width: 90vw; overflow-x: auto; white-space: nowrap;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); scrollbar-width: none;
         }
+        nav::-webkit-scrollbar { display: none; }
         nav a { 
-            padding: 10px 20px; text-decoration: none; color: #fff; opacity: 0.5; font-weight: 600; cursor: pointer; transition: 0.3s;
+            padding: 12px 20px; text-decoration: none; color: var(--text); opacity: 0.5; font-weight: 600; 
+            cursor: pointer; transition: 0.3s; border-radius: 16px; font-size: 0.9rem;
         }
-        nav a.active { opacity: 1; color: var(--accent); }
+        nav a.active { opacity: 1; background: var(--accent); color: #fff; box-shadow: 0 0 15px rgba(0,113,227,0.4); }
 
         /* PAGES */
         #content-wrapper { height: 100vh; overflow-y: auto; scroll-behavior: smooth; }
-        .page { display: none; padding: 40px 20px 120px; max-width: 900px; margin: 0 auto; opacity: 0; transform: translateY(20px); }
+        .page { display: none; padding: 90px 20px 140px; max-width: 800px; margin: 0 auto; opacity: 0; transform: translateY(20px); }
         .page.active { display: block; animation: fadeUp 0.6s forwards; }
         @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
-        /* ELEMENTS */
-        .card { background: var(--card-bg); padding: 25px; border-radius: 24px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); }
+        /* CARDS & UI */
+        .card { 
+            background: var(--card-bg); padding: 25px; border-radius: 24px; margin-bottom: 20px; 
+            border: 1px solid var(--border); position: relative; overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: all 0.3s ease;
+        }
+        .card-glow::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(0,113,227,0.1) 0%, transparent 70%); opacity: 0; transition: 0.5s; pointer-events: none; }
+        .card:hover .card-glow::before { opacity: 1; }
         
         .btn { 
             background: var(--accent); color: white; border: none; padding: 18px 30px; 
-            border-radius: 16px; font-weight: 700; font-size: 1.1rem; cursor: pointer; margin-top: 20px;
+            border-radius: 16px; font-weight: 700; font-size: 1.1rem; cursor: pointer; margin-top: 20px; transition: 0.3s;
         }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,113,227,0.3); }
+        .pulse-btn { animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 113, 227, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(0, 113, 227, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 113, 227, 0); } }
         
         .input-style { 
-            width: 100%; padding: 15px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); 
-            color: #fff; border-radius: 12px; margin: 10px 0; box-sizing: border-box; font-size: 1rem;
+            width: 100%; padding: 15px; background: var(--input-bg); border: 1px solid var(--border); 
+            color: var(--text); border-radius: 12px; margin: 10px 0; box-sizing: border-box; font-size: 1rem; transition: 0.3s;
         }
+        .input-style:focus { border-color: var(--accent); outline: none; }
 
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+        
+        .tag { padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; }
+        .mini-chart { width: 100%; height: 80px; margin-top: 15px; }
+        
+        .market-card, .learn-card { cursor: pointer; }
+        .market-card:hover, .learn-card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 10px 20px rgba(0, 113, 227, 0.1); }
+        .learn-card::after { content: '→'; position: absolute; top: 25px; right: 25px; font-size: 1.5rem; color: var(--accent); opacity: 0.5; transition: 0.3s; }
+        .learn-card:hover::after { opacity: 1; transform: translateX(5px); }
 
-        /* MARKET GRID FIXED */
-        .market-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            align-items: start;
-        }
-        
-        .comp-card { 
-            cursor: pointer; transition: 0.3s; 
-            height: 220px;
-            display: flex; flex-direction: column; justify-content: space-between;
-        }
-        .comp-card:hover { transform: translateY(-5px); border-color: var(--accent); background: rgba(255,255,255,0.08); }
-        
-        .tag { padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; display: inline-block;}
-        .mini-chart { width: 100%; height: 80px !important; margin-top: auto; }
+        /* QUIZ & FAQ */
+        .quiz-option { background: var(--input-bg); padding: 15px; border-radius: 12px; margin-bottom: 10px; cursor: pointer; transition: 0.3s; font-weight: 600; border: 1px solid var(--border); }
+        .quiz-option:hover { border-color: var(--accent); }
+        .quiz-option.correct { background: rgba(52,199,89,0.1); border-color: var(--success); color: var(--success); }
+        .quiz-option.wrong { background: rgba(255,59,48,0.1); border-color: var(--danger); color: var(--danger); }
+
+        .faq-item { background: var(--input-bg); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 15px; overflow: hidden; transition: 0.3s; }
+        .faq-question { padding: 20px; font-weight: 700; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .faq-answer { padding: 0 20px; max-height: 0; opacity: 0; transition: all 0.3s ease; font-size: 0.95rem; color: var(--text-muted); line-height: 1.5; }
+        .faq-item.active { border-color: var(--accent); background: var(--card-bg); }
+        .faq-item.active .faq-answer { padding: 0 20px 20px; max-height: 500px; opacity: 1; }
+        .faq-icon { transition: 0.3s; font-size: 1.2rem; }
+        .faq-item.active .faq-icon { transform: rotate(45deg); color: var(--accent); }
 
         /* MODAL */
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 2000;
-            justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;
+        #modal-overlay { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; 
+            backdrop-filter: blur(8px); padding: 20px; box-sizing: border-box; opacity: 0; transition: opacity 0.3s ease;
         }
-        .modal-content {
-            background: #15151a; padding: 30px; border-radius: 30px; max-width: 500px; width: 100%;
-            border: 1px solid rgba(255,255,255,0.1); animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .modal-box { 
+            background: var(--modal-bg); border: 1px solid var(--border); border-radius: 24px; padding: 30px; 
+            width: 100%; max-width: 450px; position: relative; transform: translateY(20px); transition: transform 0.3s ease;
         }
-        @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .advice-box { background: rgba(0, 113, 227, 0.1); padding: 15px; border-radius: 15px; margin-top: 20px; border: 1px solid rgba(0, 113, 227, 0.3); }
+        .close-btn { 
+            position: absolute; top: 20px; right: 20px; background: var(--input-bg); border: none; color: var(--text); 
+            width: 30px; height: 30px; border-radius: 15px; font-size: 1.2rem; cursor: pointer;
+        }
 
-        footer { text-align: center; padding: 40px; opacity: 0.4; }
-        
-        h3 { margin-top: 0; color: #fff; }
-        ul { padding-left: 20px; line-height: 1.6; opacity: 0.9; }
-        p { line-height: 1.6; opacity: 0.9; }
+        footer { text-align: center; padding: 40px; color: var(--text-muted); font-weight: 800; letter-spacing: 1px; }
+        h1, h2, h3, h4 { color: var(--text); margin-top: 0; }
+        p, ul { color: var(--text); opacity: 0.9; line-height: 1.6; }
+        .text-muted { color: var(--text-muted); }
     </style>
 </head>
 <body>
+
+<button id="theme-btn" onclick="toggleTheme()">☀️</button>
+
+<div class="ticker-wrap" id="live-ticker">
+    <div class="ticker-move">
+        <div class="ticker-item">SBER <span class="t-green">▲ 2.4%</span></div>
+        <div class="ticker-item">YDEX <span class="t-green">▲ 5.1%</span></div>
+        <div class="ticker-item">GAZP <span class="t-red">▼ 1.2%</span></div>
+        <div class="ticker-item">OZON <span class="t-green">▲ 3.8%</span></div>
+        <div class="ticker-item">TCSG <span class="t-green">▲ 1.5%</span></div>
+        <div class="ticker-item">VKCO <span class="t-red">▼ 0.8%</span></div>
+        <div class="ticker-item">LKOH <span class="t-green">▲ 0.5%</span></div>
+        <div class="ticker-item">SGZH <span class="t-red">▼ 3.4%</span></div>
+        <div class="ticker-item">BTC <span class="t-green">▲ 4.2%</span></div>
+    </div>
+</div>
 
 <div id="welcome">
     <canvas id="welcomeChart" class="stock-bg"></canvas>
     <div class="welcome-content">
         <h1>InvestPro</h1>
-        <p>Твой главный актив — время.</p>
-        <button class="btn" onclick="enterApp()">Узнать больше</button>
+        <div class="typewriter-text" id="typewriter"></div>
+        <button class="btn pulse-btn" onclick="enterApp()">Запустить Терминал</button>
     </div>
 </div>
 
 <div id="content-wrapper">
     <nav id="navbar" style="display:none;">
-        <a onclick="go('home')" id="l-home" class="active">Калькулятор</a>
+        <a onclick="go('dashboard')" id="l-dashboard" class="active">Обзор</a>
+        <a onclick="go('home')" id="l-home">Калькулятор</a>
+        <a onclick="go('goals')" id="l-goals">Цели</a>
+        <a onclick="go('portfolios')" id="l-portfolios">Портфели</a>
         <a onclick="go('learn')" id="l-learn">Гид 2026</a>
+        <a onclick="go('faq')" id="l-faq">FAQ</a>
+        <a onclick="go('quiz')" id="l-quiz">Тест</a>
         <a onclick="go('market')" id="l-market">Рынок</a>
         <a onclick="go('contact')" id="l-contact">Связь</a>
     </nav>
 
-    <section id="home" class="page active">
+    <section id="dashboard" class="page active">
+        <div style="margin-bottom: 30px;">
+            <h1 id="greeting" style="margin-bottom: 5px;">Привет, Инвестор!</h1>
+            <p class="text-muted" style="margin: 0; display: flex; align-items: center; gap: 10px;">
+                <span style="display:inline-block; width:10px; height:10px; background:var(--success); border-radius:50%; box-shadow: 0 0 10px var(--success);"></span> 
+                Терминал подключен • <span id="clock" style="font-family: monospace;">00:00:00</span>
+            </p>
+        </div>
+
+        <div class="grid-2">
+            <div class="card" style="text-align: center; padding-bottom: 10px;">
+                <h3 style="margin-bottom: 5px;">Индекс рынка</h3>
+                <p class="text-muted" style="font-size: 0.8rem;">Страх и Жадность</p>
+                <div style="position: relative; height: 130px; margin-top: 10px;">
+                    <canvas id="fearGreedChart"></canvas>
+                    <div style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); text-align: center;">
+                        <span style="font-size: 1.8rem; font-weight: 800; color: var(--success);">72</span>
+                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--success); text-transform: uppercase;">Жадность</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="display: flex; flex-direction: column; justify-content: center;">
+                <span class="tag" style="background:var(--input-bg); color:var(--text); width:max-content; margin-bottom:15px; border: 1px solid var(--accent);">💡 СОВЕТ ДНЯ</span>
+                <p id="daily-tip" style="font-size: 0.95rem; font-style: italic; opacity: 0.9; line-height: 1.5;">"Самое важное качество для инвестора — темперамент, а не интеллект."</p>
+                <div style="margin-top: auto; padding-top: 15px;">
+                    <button class="btn" style="padding: 10px 15px; font-size: 0.85rem; margin: 0; background: var(--input-bg); color: var(--text); border: 1px solid var(--border);" onclick="newTip()">Показать другой</button>
+                </div>
+            </div>
+        </div>
+
+        <h3 style="margin-top: 40px; margin-bottom: 15px;">Быстрый старт</h3>
+        <div class="grid-2">
+            <div class="card market-card" onclick="go('home')" style="border-left: 4px solid var(--accent); padding: 20px;">
+                <div style="font-size:2rem; margin-bottom:10px;">🧮</div>
+                <h4 style="margin-bottom: 5px;">Калькулятор сложного %</h4>
+                <p class="text-muted" style="font-size:0.8rem; margin:0;">Симулятор роста капитала.</p>
+            </div>
+            <div class="card market-card" onclick="go('goals')" style="border-left: 4px solid #34c759; padding: 20px;">
+                <div style="font-size:2rem; margin-bottom:10px;">🎯</div>
+                <h4 style="margin-bottom: 5px;">Трекер целей</h4>
+                <p class="text-muted" style="font-size:0.8rem; margin:0;">Сколько копить на мечту.</p>
+            </div>
+            <div class="card market-card" onclick="go('learn')" style="border-left: 4px solid #ffd60a; padding: 20px;">
+                <div style="font-size:2rem; margin-bottom:10px;">🧠</div>
+                <h4 style="margin-bottom: 5px;">База знаний</h4>
+                <p class="text-muted" style="font-size:0.8rem; margin:0;">Вся теория до выхода на биржу.</p>
+            </div>
+            <div class="card market-card" onclick="go('market')" style="border-left: 4px solid #ff3b30; padding: 20px;">
+                <div style="font-size:2rem; margin-bottom:10px;">📊</div>
+                <h4 style="margin-bottom: 5px;">Рынок 2026</h4>
+                <p class="text-muted" style="font-size:0.8rem; margin:0;">Аналитика главных компаний РФ.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="home" class="page">
         <h1>Симулятор Капитала</h1>
+        <p class="text-muted" style="margin-bottom: 20px;">Посмотри, как магия сложного процента работает на тебя.</p>
         <div class="card">
+            <div class="card-glow"></div>
             <div class="grid-2">
                 <div>
-                    <label style="font-size:0.8rem; opacity:0.6;">СУММА (₽)</label>
+                    <label class="text-muted" style="font-size:0.8rem; font-weight:700;">СУММА (₽)</label>
                     <input type="number" id="c_sum" value="10000" oninput="calc()" class="input-style">
                 </div>
                 <div>
-                    <label style="font-size:0.8rem; opacity:0.6;">СРОК (ЛЕТ)</label>
+                    <label class="text-muted" style="font-size:0.8rem; font-weight:700;">СРОК (ЛЕТ)</label>
                     <input type="number" id="c_years" value="10" oninput="calc()" class="input-style">
                 </div>
             </div>
             
-            <label style="font-size:0.8rem; opacity:0.6; margin-top:10px; display:block;">СТРАТЕГИЯ</label>
+            <label class="text-muted" style="font-size:0.8rem; margin-top:10px; display:block; font-weight:700;">СТРАТЕГИЯ</label>
             <select id="c_mode" onchange="calc()" class="input-style">
-                <option value="once">Вложил один раз</option>
+                <option value="once">Вложил один раз (и забыл)</option>
                 <option value="monthly">Пополняю каждый месяц</option>
             </select>
 
-            <label style="font-size:0.8rem; opacity:0.6; margin-top:10px; display:block;">ДОХОДНОСТЬ</label>
+            <label class="text-muted" style="font-size:0.8rem; margin-top:10px; display:block; font-weight:700;">ДОХОДНОСТЬ</label>
             <select id="c_rate" onchange="calc()" class="input-style">
-                <option value="0.16">Консервативная (16%)</option>
-                <option value="0.25">Акции РФ (25%)</option>
-                <option value="0.50">Крипто (50%)</option>
+                <option value="0.16">Консервативная (ОФЗ/Вклад ~ 16%)</option>
+                <option value="0.25">Умеренная (Акции РФ ~ 25%)</option>
+                <option value="0.50">Агрессивная (Крипта ~ 50%)</option>
             </select>
 
-            <div class="grid-2" style="margin-top:20px; background:rgba(255,255,255,0.05); padding:15px; border-radius:15px; text-align:center;">
+            <div class="grid-2" style="margin-top:20px; background:var(--input-bg); padding:20px; border-radius:15px; text-align:center;">
                 <div>
-                    <small style="opacity:0.5">БАЛАНС</small>
-                    <div id="res_total" style="color:var(--success); font-weight:800; font-size:1.2rem;">0 ₽</div>
+                    <small class="text-muted" style="font-weight:700;">ИТОГОВЫЙ БАЛАНС</small>
+                    <div id="res_total" style="color:var(--success); font-weight:800; font-size:1.8rem; margin-top:5px;">0 ₽</div>
                 </div>
                 <div>
-                    <small style="opacity:0.5">ПРИБЫЛЬ</small>
-                    <div id="res_profit" style="color:var(--accent); font-weight:800; font-size:1.2rem;">0 ₽</div>
+                    <small class="text-muted" style="font-weight:700;">ЧИСТАЯ ПРИБЫЛЬ</small>
+                    <div id="res_profit" style="color:var(--accent); font-weight:800; font-size:1.8rem; margin-top:5px;">0 ₽</div>
                 </div>
             </div>
             <canvas id="mainChart" style="margin-top:20px; max-height:200px;"></canvas>
         </div>
     </section>
 
-    <section id="learn" class="page">
-        <h1>Актуальный гид 2026</h1>
+    <section id="goals" class="page">
+        <h1>Трекер Целей</h1>
+        <p class="text-muted" style="margin-bottom: 20px;">Хочешь накопить на макбук, машину или универ? Узнай, сколько нужно откладывать.</p>
+        <div class="card">
+            <label class="text-muted" style="font-size:0.8rem; font-weight:700;">СУММА ЦЕЛИ (₽)</label>
+            <input type="number" id="g_target" value="1000000" oninput="calcGoal()" class="input-style">
+            
+            <div class="grid-2" style="margin-top: 10px;">
+                <div>
+                    <label class="text-muted" style="font-size:0.8rem; font-weight:700;">ЕСТЬ СЕЙЧАС (₽)</label>
+                    <input type="number" id="g_start" value="10000" oninput="calcGoal()" class="input-style">
+                </div>
+                <div>
+                    <label class="text-muted" style="font-size:0.8rem; font-weight:700;">СКОЛЬКО ЛЕТ КОПИМ?</label>
+                    <input type="number" id="g_years" value="5" oninput="calcGoal()" class="input-style">
+                </div>
+            </div>
+
+            <label class="text-muted" style="font-size:0.8rem; margin-top:10px; display:block; font-weight:700;">ДОХОДНОСТЬ ИНВЕСТИЦИЙ (%)</label>
+            <input type="number" id="g_rate" value="18" oninput="calcGoal()" class="input-style">
+
+            <div style="margin-top:30px; text-align:center; padding: 25px; border: 2px dashed var(--accent); border-radius: 20px;">
+                <h3 class="text-muted" style="margin-bottom: 10px;">ТЕБЕ НУЖНО ОТКЛАДЫВАТЬ:</h3>
+                <div id="g_result" style="color:var(--accent); font-weight:800; font-size:2.5rem;">0 ₽ / мес</div>
+                <p class="text-muted" style="font-size: 0.85rem; margin-top: 10px;">Благодаря процентам, это гораздо меньше, чем если бы ты просто копил под матрасом!</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="portfolios" class="page">
+        <h1>Готовые стратегии</h1>
+        <p class="text-muted" style="margin-bottom: 20px;">Как распределить активы? Вот 2 базовых примера.</p>
         
-        <div class="card" style="border-left: 4px solid var(--accent);">
-            <h3>Время — твой актив</h3>
-            <p>Инвестирование до 18 лет — это отличная стратегия, потому что твой главный актив сейчас не деньги, а <b>время</b>. Благодаря магии сложного процента даже небольшие суммы к 30–40 годам могут превратиться в серьезный капитал.</p>
-        </div>
-
-        <div class="card">
-            <h3>1. Юридическая сторона: Как открыть счет?</h3>
-            <p>В России по закону ты можешь инвестировать самостоятельно с <b>14 лет</b> (после получения паспорта), но с письменного согласия родителей.</p>
-            <ul>
-                <li><b>Где открыть:</b> Сбербанк, Т-Банк (Тинькофф), Альфа-Банк и ВТБ имеют разделы для подростков.</li>
-                <li><b>Ограничения:</b> До 18 лет нельзя использовать «кредитное плечо» (долг) и покупать фьючерсы/опционы.</li>
-                <li><b>Лимиты:</b> Обычно от 10 000 до 30 000 ₽ в год на пополнение без доп. согласия.</li>
-            </ul>
-        </div>
-
-        <div class="card">
-            <h3>2. Куда и во что вкладывать?</h3>
-            <div style="margin-bottom: 20px;">
-                <span class="tag" style="background:rgba(52,199,89,0.2); color:var(--success);">НИЗКИЙ РИСК</span>
-                <p style="margin-top:5px;"><b>Вклады и ОФЗ:</b> В 2026 году ставки привлекательны. Лучший способ хранить «подушку безопасности».</p>
+        <div class="grid-2">
+            <div class="card" style="text-align: center;">
+                <h3>Консервативный</h3>
+                <p class="text-muted" style="font-size: 0.85rem;">Минимум риска. Идеально для сохранения денег от инфляции.</p>
+                <div style="position: relative; height: 200px; margin: 20px 0;">
+                    <canvas id="pie-cons"></canvas>
+                </div>
+                <ul style="font-size: 0.9rem; list-style: none; padding: 0; text-align: left; display: inline-block;">
+                    <li><span style="color:#0071e3; font-size:1.2rem;">■</span> 60% ОФЗ / Вклады</li>
+                    <li><span style="color:#34c759; font-size:1.2rem;">■</span> 30% Фонды акций</li>
+                    <li><span style="color:#ffd60a; font-size:1.2rem;">■</span> 10% Золото</li>
+                </ul>
             </div>
-            <div style="margin-bottom: 20px;">
-                <span class="tag" style="background:rgba(0,113,227,0.2); color:var(--accent);">СРЕДНИЙ РИСК</span>
-                <p style="margin-top:5px;"><b>БПИФы и Голубые фишки:</b> Сбер, Лукойл, Яндекс. Аналитики советуют IT и ритейл.</p>
-            </div>
-            <div style="padding: 15px; background: rgba(255,59,48,0.1); border-radius: 15px;">
-                <span class="tag" style="background:var(--danger); color:#fff;">НЕ ТРОГАТЬ</span>
-                <p style="margin-top:5px;"><b>Криптовалюта (мем-коины):</b> Можно потерять всё за день.<br><b>Трейдинг (скальпинг):</b> 95% новичков теряют здесь деньги.</p>
+            <div class="card" style="text-align: center;">
+                <h3>Агрессивный</h3>
+                <p class="text-muted" style="font-size: 0.85rem;">Высокий риск. Ставка на максимальный рост капитала.</p>
+                <div style="position: relative; height: 200px; margin: 20px 0;">
+                    <canvas id="pie-aggr"></canvas>
+                </div>
+                <ul style="font-size: 0.9rem; list-style: none; padding: 0; text-align: left; display: inline-block;">
+                    <li><span style="color:#34c759; font-size:1.2rem;">■</span> 70% Акции компаний РФ</li>
+                    <li><span style="color:#0071e3; font-size:1.2rem;">■</span> 20% Облигации (Кэш)</li>
+                    <li><span style="color:#ff3b30; font-size:1.2rem;">■</span> 10% Крипта</li>
+                </ul>
             </div>
         </div>
+    </section>
 
-        <div class="card">
-            <h3>3. Сколько инвестировать?</h3>
-            <ul>
-                <li><b>Правило 10–30%:</b> Откладывай этот процент от любых поступлений.</li>
-                <li><b>Регулярность важнее суммы:</b> Лучше 500 ₽ в неделю, чем 10 000 ₽ раз в год.</li>
-            </ul>
+    <section id="learn" class="page">
+        <h1>Академия Инвестора</h1>
+        <p class="text-muted" style="margin-bottom: 20px;">Всё, что нужно знать до выхода на биржу.</p>
+        
+        <div class="grid-2">
+            <div class="card learn-card" onclick="showArticle('art_legal')">
+                <span class="tag" style="background:var(--input-bg); margin-bottom:10px; display:inline-block;">ШАГ 1</span>
+                <h3>Юридическая сторона</h3>
+                <p class="text-muted" style="margin-bottom: 0; font-size: 0.9rem;">Как легально открыть брокерский счет до 18 лет.</p>
+            </div>
+
+            <div class="card learn-card" onclick="showArticle('art_invest')">
+                <span class="tag" style="background:var(--input-bg); margin-bottom:10px; display:inline-block;">ШАГ 2</span>
+                <h3>Куда вкладывать?</h3>
+                <p class="text-muted" style="margin-bottom: 0; font-size: 0.9rem;">Разбор инструментов: от надежных ОФЗ до опасной крипты.</p>
+            </div>
+
+            <div class="card learn-card" onclick="showArticle('art_howmuch')">
+                <span class="tag" style="background:var(--input-bg); margin-bottom:10px; display:inline-block;">ШАГ 3</span>
+                <h3>Сколько откладывать?</h3>
+                <p class="text-muted" style="margin-bottom: 0; font-size: 0.9rem;">Стратегии пополнения и магия сложного процента.</p>
+            </div>
+
+            <div class="card learn-card" onclick="showArticle('art_psy')">
+                <span class="tag" style="background:rgba(255,59,48,0.2); color:var(--danger); margin-bottom:10px; display:inline-block;">ВАЖНО</span>
+                <h3>Психология рынка</h3>
+                <p class="text-muted" style="margin-bottom: 0; font-size: 0.9rem;">Почему 90% новичков теряют деньги из-за эмоций и FOMO.</p>
+            </div>
+
+            <div class="card learn-card" style="grid-column: 1 / -1; border-color: var(--accent);" onclick="showArticle('art_dict')">
+                <span class="tag" style="background:rgba(0,113,227,0.2); color:var(--accent); margin-bottom:10px; display:inline-block;">БАЗА ЗНАНИЙ</span>
+                <h3>Словарь инвестора</h3>
+                <p class="text-muted" style="margin-bottom: 0; font-size: 0.9rem;">Быки, медведи, тикеры, спреды — говорим на языке биржи.</p>
+            </div>
+            
+            <div class="card learn-card" style="grid-column: 1 / -1;" onclick="showArticle('art_tips')">
+                <h3>Главные советы профи</h3>
+            </div>
+        </div>
+    </section>
+
+    <section id="art_legal" class="page"><button class="btn" style="padding:10px 20px; width:auto; margin-bottom:20px;" onclick="go('learn')">⬅ Назад</button><h1>Юридическая сторона</h1><div class="card"><h3>Как открыть счет до 18 лет?</h3><p>В России по закону ты можешь инвестировать самостоятельно с <b>14 лет</b> (после получения паспорта), но для этого обязательно требуется письменное согласие родителей.</p><ul><li><b>Где открыть:</b> Сбербанк, Т-Банк, Альфа-Банк и ВТБ имеют специальные разделы для подростков в своих приложениях.</li><li><b>Ограничения:</b> До 18 лет брокеры блокируют маржинальную торговлю (в долг) и деривативы.</li><li><b>Лимиты:</b> Обычно от 10 000 до 30 000 ₽ в год без доп. согласия в офисе.</li><li><b>Налоги:</b> Брокер сам спишет 13% с твоей прибыли при выводе средств.</li></ul></div></section>
+    <section id="art_invest" class="page"><button class="btn" style="padding:10px 20px; width:auto; margin-bottom:20px;" onclick="go('learn')">⬅ Назад</button><h1>Куда вкладывать?</h1><div class="card"><div style="margin-bottom: 20px;"><span class="tag" style="background:rgba(52,199,89,0.2); color:var(--success);">НИЗКИЙ РИСК</span><p style="margin-top:10px;"><b>ОФЗ и Вклады:</b> Даешь в долг государству или банку. Надежнее некуда.</p></div><div style="margin-bottom: 20px;"><span class="tag" style="background:rgba(0,113,227,0.2); color:var(--accent);">СРЕДНИЙ РИСК</span><p style="margin-top:10px;"><b>БПИФы:</b> Покупаешь сразу весь рынок (Индекс Мосбиржи). Если упадет одна акция, другие вытянут фонд.</p></div><div style="padding: 15px; background: rgba(255,59,48,0.1); border-radius: 15px;"><span class="tag" style="background:var(--danger); color:#fff;">ОПАСНО</span><p style="margin-top:10px;"><b>Крипта и Трейдинг:</b> Высокая волатильность. 95% новичков теряют здесь депозит за пару дней.</p></div></div></section>
+    <section id="art_howmuch" class="page"><button class="btn" style="padding:10px 20px; width:auto; margin-bottom:20px;" onclick="go('learn')">⬅ Назад</button><h1>Сколько инвестировать?</h1><div class="card"><ul><li><b>Правило 10–30%:</b> Откладывай этот процент от любых своих поступлений.</li><li><b>Магия регулярности:</b> Лучше вкладывать по 500 рублей каждую неделю, чем копить 10 000 рублей год и вложить за один раз. Это называется усреднением.</li><li><b>Сложный процент:</b> Начни откладывать по 1000 рублей в месяц в 14 лет под 15%, и к 30 годам у тебя будет солидный капитал.</li></ul></div></section>
+    <section id="art_tips" class="page"><button class="btn" style="padding:10px 20px; width:auto; margin-bottom:20px;" onclick="go('learn')">⬅ Назад</button><h1>Главные советы</h1><div class="card"><ul><li><b>Инвестируй в себя:</b> В твоем возрасте главный актив — это знания. Образование окупится быстрее любых акций.</li><li><b>Не слушай «инфоцыган»:</b> Нормальная историческая доходность акций — 15-20% годовых. Обещают 100% за неделю? Это скам.</li><li><b>Диверсификация:</b> Не клади все яйца в одну корзину.</li><li><b>Демо-счета:</b> Поторгуй "фантиками" в приложении брокера, прежде чем заводить реальные деньги.</li></ul></div></section>
+    <section id="art_psy" class="page"><button class="btn" style="padding: 10px 20px; width: auto; margin-top: 0; margin-bottom: 20px;" onclick="go('learn')">⬅ Назад</button><h1>Психология рынка</h1><div class="card"><p>Технический анализ — это 20% успеха. Остальные 80% — это умение справляться со своими эмоциями.</p><h3 style="color:var(--danger); margin-top: 20px;">1. FOMO (Упущенная выгода)</h3><p class="text-muted">Тебе кажется, что все вокруг богатеют на крипте, кроме тебя. Ты на эмоциях покупаешь этот актив на самом пике, после чего он неизбежно падает. <b>Правило: ушел поезд — жди следующий. Не запрыгивай в последний вагон.</b></p><h3 style="color:var(--accent); margin-top: 20px;">2. Панические распродажи</h3><p class="text-muted">Когда на рынке кризис, мозг кричит: "Продавай всё!". Но кризисы всегда заканчиваются. Продавая в минус, ты фиксируешь убыток. <b>Правило: красные цифры на экране — это не убытки, пока ты не нажал кнопку «Продать».</b></p></div></section>
+    <section id="art_dict" class="page"><button class="btn" style="padding: 10px 20px; width: auto; margin-top: 0; margin-bottom: 20px;" onclick="go('learn')">⬅ Назад</button><h1>Словарь инвестора</h1><div class="card"><ul style="list-style-type: none; padding: 0;"><li style="margin-bottom: 15px;"><b>📈 Быки:</b> Инвесторы, ставящие на рост рынка (бьют рогами снизу вверх).</li><li style="margin-bottom: 15px;"><b>📉 Медведи:</b> Инвесторы, ставящие на падение (бьют лапой сверху вниз).</li><li style="margin-bottom: 15px;"><b>🔤 Тикер:</b> Короткое название компании на бирже (SBER, AAPL).</li><li style="margin-bottom: 15px;"><b>📦 Лот:</b> Минимальное количество акций для покупки.</li><li style="margin-bottom: 15px;"><b>💰 Дивиденды:</b> Часть чистой прибыли компании, выплачиваемая акционерам.</li><li><b>🏦 Брокер:</b> Посредник между тобой и биржей.</li></ul></div></section>
+
+    <section id="faq" class="page">
+        <h1>Частые вопросы (FAQ)</h1>
+        <p class="text-muted" style="margin-bottom: 20px;">Отвечаем на главные страхи начинающих инвесторов.</p>
+        
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">Что будет, если мой брокер обанкротится? <span class="faq-icon">+</span></div>
+            <div class="faq-answer">Твои акции не сгорят. Брокер — это лишь окно на биржу. Записи о том, что ты владеешь акциями, хранятся в специальной независимой организации — Национальном расчетном депозитарии (НРД). Если брокер закроется, ты просто переведешь свои акции к другому брокеру.</div>
+        </div>
+        
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">Могу ли я уйти в минус и остаться должным? <span class="faq-icon">+</span></div>
+            <div class="faq-answer">Если ты просто покупаешь акции или фонды на свои деньги — <b>нет, уйти в минус невозможно</b>. Максимум, что может случиться: акция подешевеет или компания обанкротится (тогда акция станет стоить 0). Уйти в минус можно, только если торговать «в долг» (с кредитным плечом), но до 18 лет брокеры эту функцию блокируют ради твоей безопасности.</div>
+        </div>
+        
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">Нужно ли мне самому платить налоги? <span class="faq-icon">+</span></div>
+            <div class="faq-answer">Нет, если ты торгуешь на российских биржах. Твой брокер является «налоговым агентом». Это значит, что когда ты заработаешь прибыль и решишь вывести деньги на банковскую карту, брокер сам рассчитает 13% налога на прибыль и удержит эту сумму. Никакие бумажки заполнять не надо.</div>
+        </div>
+        
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <div class="faq-question">С какой суммы можно начать? <span class="faq-icon">+</span></div>
+            <div class="faq-answer">Начать можно даже с <b>500 рублей</b>. Столько стоят многие БПИФы (фонды) и акции некоторых компаний. Важна не стартовая сумма, а привычка откладывать деньги регулярно.</div>
+        </div>
+    </section>
+
+    <section id="quiz" class="page">
+        <h1>Проверь себя</h1>
+        <p class="text-muted" style="margin-bottom: 20px;">Закрепи знания после прочтения Гида. Нажимай на варианты ответов!</p>
+        
+        <div class="card" id="q1">
+            <h3>1. Что такое сложный процент?</h3>
+            <div class="quiz-option" onclick="checkQuiz(this, false, 'q1')">Процент, который сложно посчитать в уме</div>
+            <div class="quiz-option" onclick="checkQuiz(this, true, 'q1')">Процент, который начисляется на уже заработанные проценты</div>
+            <div class="quiz-option" onclick="checkQuiz(this, false, 'q1')">Налог, который забирает брокер</div>
         </div>
 
-        <div class="card" style="border: 1px solid var(--accent);">
-            <h3 style="color:var(--accent);">4. Главные советы</h3>
-            <ul>
-                <li><b>Не слушай «инфоцыган»:</b> Норма рынка: 15–20% годовых. Обещания 100% за неделю — это мошенничество.</li>
-                <li><b>Диверсификация:</b> Не клади все яйца в одну корзину. Распределяй деньги: часть на вклад, часть в акции.</li>
-                <li><b>Демо-счета:</b> Потренируйся на виртуальных деньгах, прежде чем рисковать реальными.</li>
-            </ul>
+        <div class="card" id="q2">
+            <h3>2. Кто такие «Медведи» на бирже?</h3>
+            <div class="quiz-option" onclick="checkQuiz(this, false, 'q2')">Инвесторы из России</div>
+            <div class="quiz-option" onclick="checkQuiz(this, true, 'q2')">Инвесторы, которые ждут падения рынка</div>
+            <div class="quiz-option" onclick="checkQuiz(this, false, 'q2')">Новички, которые всего боятся</div>
+        </div>
+
+        <div class="card" id="q3">
+            <h3>3. Какое главное правило диверсификации?</h3>
+            <div class="quiz-option" onclick="checkQuiz(this, false, 'q3')">Вложить всё в самую прибыльную акцию</div>
+            <div class="quiz-option" onclick="checkQuiz(this, false, 'q3')">Покупать только криптовалюту</div>
+            <div class="quiz-option" onclick="checkQuiz(this, true, 'q3')">Не класть все яйца в одну корзину</div>
         </div>
     </section>
 
     <section id="market" class="page">
-        <h1>Топ компаний 2026</h1>
-        <p style="opacity:0.6; margin-bottom:20px;">Нажми на карточку, чтобы узнать детали.</p>
-        <div class="market-grid" id="market-grid">
-            </div>
+        <h1>Рынок 2026</h1>
+        <p class="text-muted" style="margin-bottom: 20px;">Кликай на карточки, чтобы узнать аналитику по компаниям.</p>
+        <div class="grid-2">
+            <div class="card market-card" style="padding:15px;" onclick="openModal('ydex')"><span class="tag" style="background:var(--success); color:#000;">УСПЕХ</span><h4>Яндекс (YDEX)</h4><canvas id="chart-ydex" class="mini-chart"></canvas></div>
+            <div class="card market-card" style="padding:15px;" onclick="openModal('ozon')"><span class="tag" style="background:var(--success); color:#000;">РОСТ</span><h4>Ozon (OZON)</h4><canvas id="chart-ozon" class="mini-chart"></canvas></div>
+            <div class="card market-card" style="padding:15px;" onclick="openModal('sber')"><span class="tag" style="background:var(--success); color:#000;">БАЗА</span><h4>Сбер (SBER)</h4><canvas id="chart-sber" class="mini-chart"></canvas></div>
+            <div class="card market-card" style="padding:15px;" onclick="openModal('lkoh')"><span class="tag" style="background:var(--success); color:#000;">ДИВИДЕНДЫ</span><h4>Лукойл (LKOH)</h4><canvas id="chart-lkoh" class="mini-chart"></canvas></div>
+            <div class="card market-card" style="padding:15px;" onclick="openModal('tcsg')"><span class="tag" style="background:var(--success); color:#000;">ФИНТЕХ</span><h4>Т-Банк (TCSG)</h4><canvas id="chart-tcsg" class="mini-chart"></canvas></div>
+            <div class="card market-card" style="padding:15px;" onclick="openModal('vkco')"><span class="tag" style="background:var(--danger); color:#fff;">РИСК</span><h4>VK (VKCO)</h4><canvas id="chart-vkco" class="mini-chart"></canvas></div>
+            <div class="card market-card" style="padding:15px;" onclick="openModal('gazp')"><span class="tag" style="background:var(--danger); color:#fff;">КРИЗИС</span><h4>Газпром (GAZP)</h4><canvas id="chart-gazp" class="mini-chart"></canvas></div>
+            <div class="card market-card" style="padding:15px;" onclick="openModal('seg')"><span class="tag" style="background:var(--danger); color:#fff;">ДОЛГИ</span><h4>Сегежа (SGZH)</h4><canvas id="chart-seg" class="mini-chart"></canvas></div>
+        </div>
     </section>
 
     <section id="contact" class="page">
         <div class="card" style="text-align:center; padding:60px 20px;">
             <div style="font-size:4rem; margin-bottom:20px;">👨‍💻</div>
-            <h2>Автор проекта</h2>
-            <p style="opacity:0.6;">Финансовая грамотность для нового поколения.</p>
-            <a href="https://t.me/yanickdr" class="btn" target="_blank" style="display:inline-block; text-decoration:none;">Telegram: @yanickdr</a>
+            <h2>Авторы проекта</h2>
+            <p class="text-muted">Создано для развития финансовой грамотности.</p>
+            <div style="margin-top: 20px;">
+                <a href="https://t.me/yanickdr" class="btn" target="_blank" style="display:inline-block; text-decoration:none; margin: 10px;">Telegram: @yanickdr</a>
+                <a href="https://t.me/aleksaxxxo" class="btn" target="_blank" style="display:inline-block; text-decoration:none; margin: 10px;">Telegram: @aleksaxxxo</a>
+            </div>
         </div>
     </section>
 
-    <footer>InvestPro 2026 | @yanickdr</footer>
+    <footer>InvestPro 2026</footer>
 </div>
 
-<div id="modal" class="modal" onclick="closeModal()">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <span id="m-tag" class="tag" style="margin-bottom:15px; display:inline-block;"></span>
-        <h2 id="m-title" style="margin-top:0;"></h2>
-        <p id="m-desc" style="opacity:0.8;"></p>
-        <div class="advice-box">
-            <h4 style="margin:0 0 5px 0; color:var(--accent);">💡 Мнение аналитика:</h4>
-            <p id="m-advice" style="margin:0; font-size:0.9rem;"></p>
+<div id="modal-overlay" onclick="closeModal(event)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+        <button class="close-btn" onclick="closeModal(event)">×</button>
+        <span id="modal-tag" class="tag" style="margin-bottom: 10px; display: inline-block;">ТЭГ</span>
+        <h2 id="modal-title" style="margin: 10px 0;">Название</h2>
+        <canvas id="modalChart" style="width: 100%; height: 120px; margin-bottom: 20px;"></canvas>
+        <div style="background: var(--input-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border);">
+            <p style="margin: 0; font-size: 0.95rem; line-height: 1.5;" id="modal-info">Информация.</p>
         </div>
-        <button class="btn" style="width:100%; padding:15px; margin-top:20px;" onclick="closeModal()">Понятно</button>
     </div>
 </div>
 
 <script>
-    // 10 COMPANIES
-    const companies = [
-        { id:'ydex', name:'Яндекс', tag:'ЛИДЕР', color:'#34c759', bg:'rgba(52,199,89,0.2)', desc:'Монополист в поиске. Внедряет нейросети.', advice:'Держи в долгосрок.', trend:[20,30,45,60,80] },
-        { id:'sber', name:'Сбер', tag:'БАЗА', color:'#34c759', bg:'rgba(52,199,89,0.2)', desc:'Самый прибыльный банк. Щедрые дивиденды.', advice:'Основа любого портфеля.', trend:[40,45,50,65,70] },
-        { id:'ozon', name:'Ozon', tag:'РОСТ', color:'#34c759', bg:'rgba(52,199,89,0.2)', desc:'Гигант e-commerce. Растет двузначными темпами.', advice:'Агрессивная ставка.', trend:[10,25,30,50,90] },
-        { id:'tcsg', name:'Т-Банк', tag:'ФИНТЕХ', color:'#34c759', bg:'rgba(52,199,89,0.2)', desc:'Любимец молодежи. Технологичный банк.', advice:'Для стратегии роста.', trend:[30,40,35,55,75] },
-        { id:'posi', name:'Positive', tag:'КИБЕРБЕЗ', color:'#34c759', bg:'rgba(52,199,89,0.2)', desc:'Защита данных. Огромный спрос.', advice:'Сектор будущего.', trend:[15,25,45,60,85] },
-        { id:'lkoh', name:'Лукойл', tag:'ДИВИДЕНДЫ', color:'#34c759', bg:'rgba(52,199,89,0.2)', desc:'Нефтяной гигант. Стабильно платит.', advice:'Для пассивного дохода.', trend:[50,55,60,65,70] },
-        
-        { id:'gazp', name:'Газпром', tag:'КРИЗИС', color:'#ff3b30', bg:'rgba(255,59,48,0.2)', desc:'Потеря рынка Европы. Налоги.', advice:'Не покупать сейчас.', trend:[90,70,50,30,20] },
-        { id:'sgzh', name:'Сегежа', tag:'ДОЛГИ', color:'#ff3b30', bg:'rgba(255,59,48,0.2)', desc:'Лесной холдинг в долгах.', advice:'Очень высокий риск.', trend:[60,40,20,10,5] },
-        { id:'vkco', name:'VK', tag:'РИСК', color:'#ff3b30', bg:'rgba(255,59,48,0.2)', desc:'Проблемы с прибылью.', advice:'Лучше выбрать Яндекс.', trend:[50,45,40,35,30] },
-        { id:'mvid', name:'М.Видео', tag:'УБЫТКИ', color:'#ff3b30', bg:'rgba(255,59,48,0.2)', desc:'Конкуренция давит бизнес.', advice:'Сектор офлайн-ритейла падает.', trend:[70,50,40,25,15] }
-    ];
+    // --- ТЕМА (СВЕТЛАЯ / ТЕМНАЯ) ---
+    function toggleTheme() {
+        document.body.classList.toggle('light-theme');
+        const btn = document.getElementById('theme-btn');
+        if (document.body.classList.contains('light-theme')) btn.innerText = '🌙';
+        else btn.innerText = '☀️';
+    }
 
+    // --- ПЕЧАТАЮЩИЙСЯ ТЕКСТ ---
+    const textToType = "Узнай, как заставить деньги работать на тебя. Инвестирование до 18 лет — это отличная стратегия.";
+    let typeIndex = 0;
+    function typeWriter() {
+        if (typeIndex < textToType.length) {
+            document.getElementById("typewriter").innerHTML += textToType.charAt(typeIndex);
+            typeIndex++;
+            setTimeout(typeWriter, 50);
+        }
+    }
+
+    // --- ЧАСЫ И ПРИВЕТСТВИЕ ДЛЯ ДАШБОРДА ---
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('clock').innerText = now.toLocaleTimeString();
+        
+        const h = now.getHours();
+        let greeting = "Привет";
+        if (h >= 5 && h < 12) greeting = "Доброе утро";
+        else if (h >= 12 && h < 18) greeting = "Добрый день";
+        else if (h >= 18 && h < 23) greeting = "Добрый вечер";
+        else greeting = "Доброй ночи";
+        
+        const el = document.getElementById('greeting');
+        if (el.innerText !== greeting + ", Инвестор!") el.innerText = greeting + ", Инвестор!";
+    }
+    setInterval(updateClock, 1000);
+
+    // --- СОВЕТ ДНЯ ---
+    const tips = [
+        "«Самое важное качество для инвестора — темперамент, а не интеллект.» (Уоррен Баффетт)",
+        "«В инвестировании то, что комфортно, редко бывает прибыльным.» (Роберт Арнотт)",
+        "Не пытайся угадать идеальный момент для покупки. Регулярность важнее тайминга.",
+        "Рынок акций — это инструмент для перевода денег от нетерпеливых к терпеливым.",
+        "Сложный процент — восьмое чудо света. Тот, кто понимает его, зарабатывает его."
+    ];
+    function newTip() {
+        const tipEl = document.getElementById('daily-tip');
+        let randomTip = tips[Math.floor(Math.random() * tips.length)];
+        while(tipEl.innerText === randomTip) randomTip = tips[Math.floor(Math.random() * tips.length)];
+        tipEl.style.opacity = 0;
+        setTimeout(() => { tipEl.innerText = randomTip; tipEl.style.opacity = 1; }, 300);
+    }
+
+    // --- ИНДЕКС СТРАХА И ЖАДНОСТИ ---
+    let fgChartRef;
+    function initFearGreed() {
+        if (fgChartRef) return;
+        const ctx = document.getElementById('fearGreedChart').getContext('2d');
+        fgChartRef = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Экстремальный Страх', 'Страх', 'Нейтрально', 'Жадность', 'Экстремальная Жадность'],
+                datasets: [{ data: [20, 20, 20, 20, 20], backgroundColor: ['#ff3b30', '#ff9500', '#ffd60a', '#34c759', '#00ff00'], borderWidth: 0 }]
+            },
+            options: { rotation: -90, circumference: 180, cutout: '75%', plugins: { legend: { display: false }, tooltip: { enabled: false } }, maintainAspectRatio: false }
+        });
+    }
+
+    // --- FAQ АККОРДЕОН ---
+    function toggleFaq(element) { element.classList.toggle('active'); }
+
+    // --- НАВИГАЦИЯ ---
     function enterApp() {
         document.getElementById('welcome').style.transform = 'translateY(-100%)';
         setTimeout(() => {
+            document.getElementById('live-ticker').style.display = 'block'; 
             document.getElementById('navbar').style.display = 'flex';
             document.getElementById('content-wrapper').style.overflowY = 'auto'; 
-            go('home');
+            go('dashboard');
+            updateClock();
+            initFearGreed();
         }, 600);
     }
 
@@ -279,100 +596,153 @@
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        document.getElementById('l-' + id).classList.add('active');
+        if (document.getElementById('l-' + id)) document.getElementById('l-' + id).classList.add('active');
         document.getElementById('content-wrapper').scrollTo(0,0);
-    }
-
-    function renderMarket() {
-        const grid = document.getElementById('market-grid');
-        grid.innerHTML = '';
-        companies.forEach((c, i) => {
-            const card = document.createElement('div');
-            card.className = 'card comp-card';
-            card.onclick = () => openModal(i);
-            card.innerHTML = `
-                <div style="display:flex; justify-content:space-between;">
-                    <span class="tag" style="background:${c.bg}; color:${c.color}">${c.tag}</span>
-                    <strong style="color:${c.color}">${c.trend[4] > c.trend[0] ? '↗' : '↘'}</strong>
-                </div>
-                <h3 style="margin: 10px 0 0; color:#fff;">${c.name}</h3>
-                <canvas id="ch-${c.id}" class="mini-chart"></canvas>
-            `;
-            grid.appendChild(card);
-        });
         
-        setTimeout(() => {
-            companies.forEach(c => {
-                new Chart(document.getElementById(`ch-${c.id}`), {
-                    type: 'line',
-                    data: { labels: [1,2,3,4,5], datasets: [{ data: c.trend, borderColor: c.color, borderWidth: 2, pointRadius: 0 }] },
-                    options: { plugins:{legend:false}, scales:{x:{display:false},y:{display:false}}, responsive:true, maintainAspectRatio:false }
-                });
-            });
-        }, 100);
+        if(id === 'portfolios') renderPortfolios();
     }
 
-    function openModal(i) {
-        const c = companies[i];
-        document.getElementById('m-title').innerText = c.name;
-        document.getElementById('m-desc').innerText = c.desc;
-        document.getElementById('m-advice').innerText = c.advice;
-        const tag = document.getElementById('m-tag');
-        tag.innerText = c.tag;
-        tag.style.background = c.bg;
-        tag.style.color = c.color;
-        document.getElementById('modal').style.display = 'flex';
+    function showArticle(articleId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(articleId).classList.add('active');
+        document.getElementById('content-wrapper').scrollTo(0,0);
+        document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+        document.getElementById('l-learn').classList.add('active');
     }
 
-    function closeModal() { document.getElementById('modal').style.display = 'none'; }
+    // --- ТРЕКЕР ЦЕЛЕЙ ---
+    function calcGoal() {
+        const target = parseFloat(document.getElementById('g_target').value) || 0;
+        const start = parseFloat(document.getElementById('g_start').value) || 0;
+        const years = parseFloat(document.getElementById('g_years').value) || 0;
+        const rate = (parseFloat(document.getElementById('g_rate').value) || 0) / 100;
+        
+        if (years <= 0 || target <= 0) { document.getElementById('g_result').innerText = "0 ₽ / мес"; return; }
 
+        const months = years * 12;
+        const monthlyRate = rate / 12;
+        let pmt = 0;
+        if (monthlyRate === 0) pmt = (target - start) / months;
+        else {
+            const compoundFactor = Math.pow(1 + monthlyRate, months);
+            const futureStart = start * compoundFactor;
+            const targetRemaining = target - futureStart;
+            if (targetRemaining <= 0) pmt = 0; 
+            else pmt = targetRemaining / ( ((compoundFactor - 1) / monthlyRate) * (1 + monthlyRate) );
+        }
+        if (pmt < 0) pmt = 0;
+        document.getElementById('g_result').innerText = Math.ceil(pmt).toLocaleString() + ' ₽ / мес';
+    }
+
+    // --- ЛОГИКА КВИЗА ---
+    function checkQuiz(element, isCorrect, questionId) {
+        const parent = document.getElementById(questionId);
+        const options = parent.querySelectorAll('.quiz-option');
+        options.forEach(opt => { opt.onclick = null; opt.style.opacity = '0.5'; });
+        element.style.opacity = '1';
+        if(isCorrect) { element.classList.add('correct'); element.innerHTML += " ✅ Верно!"; } 
+        else {
+            element.classList.add('wrong'); element.innerHTML += " ❌ Ошибка";
+            options.forEach(opt => { if(opt.getAttribute('onclick') && opt.getAttribute('onclick').includes('true')) { opt.classList.add('correct'); opt.style.opacity = '1'; } });
+        }
+    }
+
+    // --- ПОРТФЕЛИ (PIE CHARTS) ---
+    let portRendered = false;
+    function renderPortfolios() {
+        if(portRendered) return;
+        portRendered = true;
+        new Chart(document.getElementById('pie-cons').getContext('2d'), {
+            type: 'doughnut', data: { labels: ['ОФЗ', 'Акции', 'Золото'], datasets: [{ data: [60, 30, 10], backgroundColor: ['#0071e3', '#34c759', '#ffd60a'], borderWidth: 0 }] },
+            options: { plugins: { legend: { display: false } }, cutout: '75%', maintainAspectRatio: false }
+        });
+        new Chart(document.getElementById('pie-aggr').getContext('2d'), {
+            type: 'doughnut', data: { labels: ['Акции', 'Кэш', 'Крипта'], datasets: [{ data: [70, 20, 10], backgroundColor: ['#34c759', '#0071e3', '#ff3b30'], borderWidth: 0 }] },
+            options: { plugins: { legend: { display: false } }, cutout: '75%', maintainAspectRatio: false }
+        });
+    }
+
+    // --- ДАННЫЕ РЫНКА И МОДАЛКА ---
+    const marketData = {
+        ydex: { name: "Яндекс", status: "УСПЕХ", color: "#34c759", info: "Лидер в AI и IT. Ожидается сильный рост выручки.", trend: [10, 20, 15, 30, 50] },
+        ozon: { name: "Ozon", status: "РОСТ", color: "#34c759", info: "Вышел на чистую прибыль. Драйвер дальнейшего роста — финтех (Озон Банк).", trend: [5, 10, 25, 40, 60] },
+        sber: { name: "Сбер", status: "БАЗА", color: "#34c759", info: "Сверхнадежность и гигантские дивиденды.", trend: [20, 25, 22, 35, 40] },
+        lkoh: { name: "Лукойл", status: "ДИВИДЕНДЫ", color: "#34c759", info: "Отличный менеджмент и щедрые дивиденды.", trend: [30, 32, 35, 34, 45] },
+        tcsg: { name: "Т-Банк", status: "ФИНТЕХ", color: "#34c759", info: "Агрессивный рост и высочайшая рентабельность капитала.", trend: [15, 25, 20, 40, 55] },
+        vkco: { name: "VK", status: "РИСК", color: "#ff3b30", info: "Огромные траты на авторов и развитие сервисов. Генерирует убытки.", trend: [25, 20, 15, 18, 10] },
+        gazp: { name: "Газпром", status: "КРИЗИС", color: "#ff3b30", info: "Потеря рынков и налоги съедают прибыль. Без дивидендов.", trend: [50, 40, 30, 20, 15] },
+        seg: { name: "Сегежа", status: "ДОЛГИ", color: "#ff3b30", info: "Лесопромышленники с гигантским долгом.", trend: [40, 30, 20, 10, 5] }
+    };
+
+    let modalChartRef;
+    function openModal(id) {
+        const data = marketData[id];
+        document.getElementById('modal-title').innerText = data.name;
+        document.getElementById('modal-tag').innerText = data.status;
+        document.getElementById('modal-tag').style.background = data.color === '#34c759' ? 'rgba(52,199,89,0.2)' : 'rgba(255,59,48,0.2)';
+        document.getElementById('modal-tag').style.color = data.color;
+        document.getElementById('modal-info').innerText = data.info;
+
+        const overlay = document.getElementById('modal-overlay');
+        overlay.style.display = 'flex';
+        setTimeout(() => { overlay.style.opacity = '1'; document.querySelector('.modal-box').style.transform = 'translateY(0)'; }, 10);
+
+        if(modalChartRef) modalChartRef.destroy();
+        modalChartRef = new Chart(document.getElementById('modalChart').getContext('2d'), {
+            type: 'line', data: { labels: [1,2,3,4,5], datasets: [{ data: data.trend, borderColor: data.color, borderWidth: 4, tension: 0.4, pointRadius: 3, pointBackgroundColor: data.color }] },
+            options: { plugins:{legend:{display:false}}, scales:{x:{display:false},y:{display:false}} }
+        });
+    }
+
+    function closeModal(e) {
+        if(e) e.preventDefault();
+        document.getElementById('modal-overlay').style.opacity = '0';
+        document.querySelector('.modal-box').style.transform = 'translateY(20px)';
+        setTimeout(() => { document.getElementById('modal-overlay').style.display = 'none'; }, 300);
+    }
+
+    // --- КАЛЬКУЛЯТОР ОСНОВНОЙ ---
     let mainChartRef;
     function calc() {
         const sum = parseFloat(document.getElementById('c_sum').value) || 0;
         const years = parseFloat(document.getElementById('c_years').value) || 0;
         const rate = parseFloat(document.getElementById('c_rate').value);
         const mode = document.getElementById('c_mode').value;
-
         let total = 0, invested = 0, data = [], labels = [];
+
         if (mode === 'once') {
             invested = sum;
-            for(let i=0; i<=years; i++) {
-                total = sum * Math.pow((1+rate), i);
-                data.push(Math.round(total)); labels.push(i+'г');
-            }
+            for(let i=0; i<=years; i++) { total = sum * Math.pow((1+rate), i); data.push(Math.round(total)); labels.push(i+'г'); }
         } else {
-            invested = sum * years * 12;
-            let current = 0;
-            for(let i=0; i<=years; i++) {
-                if(i>0) for(let m=0; m<12; m++) current = (current + sum) * (1 + rate/12);
-                data.push(Math.round(current)); labels.push(i+'г');
-            }
-            total = current;
+            invested = sum * years * 12; let cur = 0;
+            for(let i=0; i<=years; i++) { if(i > 0) { for(let m=0; m<12; m++) cur = (cur + sum) * (1 + rate/12); } data.push(Math.round(cur)); labels.push(i+'г'); }
+            total = cur;
         }
 
         document.getElementById('res_total').innerText = Math.round(total).toLocaleString() + ' ₽';
         let profit = total - (mode === 'once' ? sum : (sum * years * 12));
-        if (profit < 0) profit = 0;
-        document.getElementById('res_profit').innerText = '+' + Math.round(profit).toLocaleString() + ' ₽';
+        document.getElementById('res_profit').innerText = '+' + Math.round(profit > 0 ? profit : 0).toLocaleString() + ' ₽';
 
-        const ctx = document.getElementById('mainChart').getContext('2d');
         if (mainChartRef) mainChartRef.destroy();
-        mainChartRef = new Chart(ctx, {
-            type: 'line',
-            data: { labels: labels, datasets: [{ data: data, borderColor: '#0071e3', backgroundColor: 'rgba(0,113,227,0.2)', fill: true, tension: 0.4, pointRadius:0 }] },
-            options: { plugins: {legend:false}, scales: {x:{display:false}, y:{display:false}} }
+        mainChartRef = new Chart(document.getElementById('mainChart').getContext('2d'), {
+            type: 'line', data: { labels: labels, datasets: [{ data: data, borderColor: '#0071e3', backgroundColor: 'rgba(0, 113, 227, 0.2)', fill: true, tension: 0.4, pointRadius: 0 }] },
+            options: { plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } }
         });
     }
 
     window.onload = () => {
-        const wCtx = document.getElementById('welcomeChart').getContext('2d');
-        new Chart(wCtx, {
-            type: 'line',
-            data: { labels: [...Array(30).keys()], datasets: [{ data: Array.from({length:30},()=>Math.random()), borderColor: '#34c759', tension: 0.5, pointRadius:0 }] },
-            options: { responsive:true, maintainAspectRatio:false, plugins:{legend:false}, scales:{x:{display:false},y:{display:false}}, animation:{duration:2000, loop:true} }
+        setTimeout(typeWriter, 500); 
+        new Chart(document.getElementById('welcomeChart').getContext('2d'), {
+            type: 'line', data: { labels: [...Array(30).keys()], datasets: [{ data: Array.from({length:30},()=>Math.random()), borderColor: '#34c759', tension: 0.5, pointRadius:0 }] },
+            options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{display:false},y:{display:false}}, animation:{duration:2000, loop:true} }
         });
-        renderMarket();
+        const d = (id, c, t) => new Chart(document.getElementById(id), { type: 'line', data: { labels: [1,2,3,4,5], datasets: [{ data: t, borderColor: c, borderWidth:2, pointRadius:0 }] }, options: { plugins:{legend:{display:false}}, scales:{x:{display:false},y:{display:false}} }});
+        d('chart-ydex', '#34c759', marketData.ydex.trend); d('chart-ozon', '#34c759', marketData.ozon.trend);
+        d('chart-sber', '#34c759', marketData.sber.trend); d('chart-lkoh', '#34c759', marketData.lkoh.trend);
+        d('chart-tcsg', '#34c759', marketData.tcsg.trend); d('chart-vkco', '#ff3b30', marketData.vkco.trend);
+        d('chart-gazp', '#ff3b30', marketData.gazp.trend); d('chart-seg', '#ff3b30', marketData.seg.trend);
         calc();
+        calcGoal(); 
     };
 </script>
 </body>
