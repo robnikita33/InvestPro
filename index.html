@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InvestPro</title>
+    <title>InvestPro | Apple Style</title>
 
     <meta name="description" content="InvestPro 2026 — Полный гид по инвестициям для подростков.">
     <meta name="author" content="@yanickdr">
@@ -14,25 +14,23 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <style>
-        /* CSS ПЕРЕМЕННЫЕ - APPLE DARK THEME */
         :root {
             --bg: #000000; 
             --bg-secondary: #1c1c1e;
-            --accent: #0a84ff; /* Apple Blue */
+            --accent: #0a84ff; 
             --accent-glow: rgba(10, 132, 255, 0.3);
             --card-bg: rgba(28, 28, 30, 0.65); 
             --card-border: rgba(255, 255, 255, 0.08);
             --text: #f5f5f7;
             --text-muted: #86868b;
-            --success: #32d74b; /* Apple Green */
-            --danger: #ff453a; /* Apple Red */
-            --warning: #ffd60a; /* Apple Yellow */
+            --success: #32d74b; 
+            --danger: #ff453a; 
+            --warning: #ffd60a; 
             --nav-bg: rgba(28, 28, 30, 0.75);
             --input-bg: rgba(255, 255, 255, 0.05);
             --glass-blur: blur(25px) saturate(180%);
         }
 
-        /* APPLE LIGHT THEME */
         body.light-theme {
             --bg: #f5f5f7;
             --bg-secondary: #ffffff;
@@ -57,14 +55,12 @@
             -webkit-font-smoothing: antialiased; 
         }
 
-        /* ИНДИКАТОР ПРОГРЕССА ЧТЕНИЯ (ФИШКА 3) */
         #reading-progress {
             position: fixed; top: 0; left: 0; height: 3px; background: var(--accent);
             z-index: 9999; width: 0%; pointer-events: none; display: none;
             box-shadow: 0 0 10px var(--accent-glow); transition: width 0.15s ease-out;
         }
 
-        /* ПЛАВНЫЕ ГРАДИЕНТНЫЕ ПЯТНА НА ФОНЕ */
         .ambient-bg {
             position: fixed; top: -20vh; left: -10vw; width: 120vw; height: 120vh;
             background: 
@@ -75,7 +71,6 @@
             filter: blur(60px);
         }
 
-        /* КНОПКА ТЕМЫ (Стиль Control Center) */
         #theme-btn {
             position: fixed; top: 25px; right: 25px; z-index: 6000; 
             background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text); 
@@ -87,7 +82,6 @@
         }
         #theme-btn:hover { transform: scale(1.08); background: var(--input-bg); }
 
-        /* WELCOME SCREEN */
         #welcome {
             position: fixed; inset: 0; background: var(--bg); z-index: 5000; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
@@ -96,7 +90,6 @@
         
         .welcome-content { text-align: center; padding: 40px; z-index: 2; }
         
-        /* ПРЫГАЮЩИЙ ГРАФИК */
         .chart-container { width: 300px; height: 120px; position: relative; margin: 0 auto 30px; }
         .bouncing-line {
             width: 100%; height: 100%; stroke: var(--accent);
@@ -119,7 +112,6 @@
         
         .typewriter-text { font-size: 1.3rem; color: var(--text-muted); margin-bottom: 40px; min-height: 30px; font-weight: 400; letter-spacing: -0.01em; }
 
-        /* НАВИГАЦИЯ (Apple Dock Style) */
         nav { 
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); 
             background: var(--nav-bg); 
@@ -144,7 +136,6 @@
         .page.active { display: block; animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
 
-        /* КАРТОЧКИ (Стиль виджетов iOS/macOS) */
         .card { 
             background: var(--card-bg); padding: 35px; border-radius: 28px; margin-bottom: 24px; 
             border: 1px solid var(--card-border); position: relative; overflow: hidden;
@@ -159,7 +150,6 @@
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
-        /* 3D PARALLAX КАРТОЧКИ РЫНКА (ФИШКА 1) */
         .market-card { 
             cursor: pointer; padding: 25px !important; 
             perspective: 1000px; transform-style: preserve-3d;
@@ -177,14 +167,12 @@
         .market-card h4 { font-size: 1.3rem; margin-bottom: 5px; font-weight: 600; pointer-events: none; }
         .mini-chart { width: 100%; height: 70px; margin-top: 15px; pointer-events: none; }
 
-        /* HAPTIC TOUCH / ФИЗИКА НАЖАТИЙ (ФИШКА 2) */
         .btn:active, .quiz-option:active, .market-card:active, .learn-card:active, nav a:active, .faq-item:active {
             transform: scale(0.96) translateY(0) !important;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1) !important;
             transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.1s !important;
         }
 
-        /* КНОПКИ */
         .btn { 
             background: var(--bg-secondary); color: var(--text); border: 1px solid var(--card-border); 
             padding: 14px 30px; border-radius: 980px; font-weight: 500; font-size: 1rem; 
@@ -193,7 +181,6 @@
         .btn-primary { background: var(--text); color: var(--bg); border: none; }
         .btn:hover { transform: scale(1.03); filter: brightness(1.1); }
 
-        /* ИНПУТЫ */
         .input-style { 
             width: 100%; padding: 16px; background: var(--input-bg); border: 1.5px solid transparent; 
             color: var(--text); border-radius: 14px; margin: 8px 0; font-size: 1rem; 
@@ -208,13 +195,13 @@
             padding: 6px 12px; border-radius: 980px; font-size: 0.75rem; font-weight: 600; 
             text-transform: uppercase; letter-spacing: 0.05em; display: inline-block;
             background: var(--input-bg); border: 1px solid var(--card-border); color: var(--text-muted);
+            transition: color 0.4s ease, border-color 0.4s ease;
         }
 
         .learn-card { cursor: pointer; display: flex; flex-direction: column; justify-content: center; min-height: 140px;}
         .learn-card::after { content: '→'; position: absolute; bottom: 25px; right: 30px; font-size: 1.5rem; font-weight: 300; color: var(--text-muted); opacity: 0; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); transform: translateX(-15px); }
         .learn-card:hover::after { opacity: 1; transform: translateX(0); color: var(--accent); }
 
-        /* ГЛОССАРИЙ ПО НАВЕДЕНИЮ (ИСПРАВЛЕНА ОБРЕЗКА) */
         .tooltip-word {
             border-bottom: 1px dashed var(--text-muted); cursor: help; position: relative; white-space: nowrap; color: var(--text);
         }
@@ -230,7 +217,6 @@
         .tooltip-word:hover::after { opacity: 1; visibility: visible; transform: translateY(0); }
         body.light-theme .tooltip-word::after { background: rgba(255,255,255,0.9); box-shadow: 0 14px 40px rgba(0,0,0,0.1); }
 
-        /* КВИЗ & СТАТИЧНЫЙ FAQ */
         .quiz-option { 
             background: var(--input-bg); padding: 18px; border-radius: 16px; margin-bottom: 12px; 
             cursor: pointer; transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1); border: 1.5px solid transparent; font-size: 1rem; font-weight: 500;
@@ -247,7 +233,6 @@
         .faq-question { font-weight: 700; font-size: 1.1rem; margin-bottom: 10px; color: var(--text); }
         .faq-answer { font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; }
 
-        /* МОДАЛЬНОЕ ОКНО */
         #modal-overlay { 
             display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9999; 
             justify-content: center; align-items: center; padding: 20px; opacity: 0; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -779,7 +764,7 @@
         </div>
     </section>
 
-    <footer>InvestPro 2026 </footer>
+    <footer>InvestPro 2026 • Designed for Web</footer>
 </div>
 
 <div id="modal-overlay" onclick="closeModal(event)">
@@ -795,8 +780,10 @@
 </div>
 
 <script>
-    // --- ПЛАВНЫЙ СКОРЛЛ REVEAL (Apple Style) & READING PROGRESS ---
-    function handleScroll() {
+    // Инициализация объекта для хранения ссылок на графики
+    const miniCharts = {};
+
+    function checkReveal() {
         const reveals = document.querySelectorAll('.reveal');
         const windowHeight = window.innerHeight;
         reveals.forEach(reveal => {
@@ -804,7 +791,10 @@
                 reveal.classList.add('active');
             }
         });
-
+    }
+    
+    function handleScroll() {
+        checkReveal();
         const activePage = document.querySelector('.page.active');
         const progress = document.getElementById('reading-progress');
         if (activePage && activePage.id.startsWith('art_')) {
@@ -1029,6 +1019,7 @@
         new Chart(document.getElementById('pie-aggr').getContext('2d'), { type: 'doughnut', data: { labels: ['Акции', 'LQDT', 'Золото'], datasets: [{ data: [70, 20, 10], backgroundColor: ['#32d74b', '#0a84ff', '#ffd60a'], borderWidth: 0 }] }, options: o });
     }
 
+    // Базовые данные для фоллбека (пока грузится API MOEX)
     const marketData = {
         ydex: { name: "Яндекс (YDEX)", status: "IT-СЕКТОР", color: "#32d74b", info: "Бенефициар ухода западных сервисов. Развивает ИИ, автономный транспорт и e-commerce.", trend: [10, 20, 15, 30, 50] },
         ozon: { name: "Ozon (OZON)", status: "E-COM", color: "#32d74b", info: "Вышел на чистую прибыль. Драйвер роста — высокомаржинальный сегмент Озон Банка.", trend: [5, 10, 25, 40, 60] },
@@ -1048,14 +1039,22 @@
         document.getElementById('modal-tag').style.color = data.color;
         document.getElementById('modal-tag').style.borderColor = data.color;
         document.getElementById('modal-info').innerText = data.info;
+        
         const overlay = document.getElementById('modal-overlay');
-        overlay.style.display = 'flex'; setTimeout(() => { overlay.style.opacity = '1'; document.querySelector('.modal-box').style.transform = 'translateY(0) scale(1)'; }, 10);
+        overlay.style.display = 'flex'; 
+        setTimeout(() => { overlay.style.opacity = '1'; document.querySelector('.modal-box').style.transform = 'translateY(0) scale(1)'; }, 10);
+        
         if(modalChartRef) modalChartRef.destroy();
         modalChartRef = new Chart(document.getElementById('modalChart').getContext('2d'), {
-            type: 'line', data: { labels: ['Q1','Q2','Q3','Q4','Q5'], datasets: [{ data: data.trend, borderColor: data.color, borderWidth: 3, tension: 0.4, pointRadius: 0 }] },
+            type: 'line', 
+            data: { 
+                labels: data.trend.map((_, i) => i), // Динамическое количество точек
+                datasets: [{ data: data.trend, borderColor: data.color, borderWidth: 3, tension: 0.4, pointRadius: 0 }] 
+            },
             options: { plugins:{legend:{display:false}}, scales:{x:{display:false},y:{display:false}}, animation: {duration: 800, easing: 'easeOutQuart'} }
         });
     }
+    
     function closeModal(e) {
         if(e) e.preventDefault();
         document.getElementById('modal-overlay').style.opacity = '0'; document.querySelector('.modal-box').style.transform = 'translateY(40px) scale(0.95)';
@@ -1093,10 +1092,74 @@
         });
     }
 
+    // --- ИНТЕГРАЦИЯ MOEX API ДЛЯ РЕАЛЬНЫХ ДАННЫХ ---
+    async function loadRealMarketData() {
+        const tickers = {
+            ydex: 'YDEX', ozon: 'OZON', sber: 'SBER', lkoh: 'LKOH',
+            tcsg: 'TCSG', vkco: 'VKCO', gazp: 'GAZP', seg: 'SGZH'
+        };
+
+        for (const [key, ticker] of Object.entries(tickers)) {
+            try {
+                // Обращаемся к публичному API MOEX за дневными свечами (interval=24)
+                const res = await fetch(`https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities/${ticker}/candles.json?interval=24&iss.meta=off`);
+                const json = await res.json();
+                
+                const closeIdx = json.candles.columns.indexOf('close');
+                const prices = json.candles.data.map(row => row[closeIdx]);
+                
+                if (prices.length > 0) {
+                    const trend = prices.slice(-30); // Берем данные за последние 30 дней
+                    marketData[key].trend = trend;
+                    
+                    const first = trend[0];
+                    const last = trend[trend.length - 1];
+                    
+                    // Умный цвет: зеленый если акция выросла, красный если упала
+                    const color = last >= first ? '#32d74b' : '#ff453a'; 
+                    marketData[key].color = color;
+
+                    // Обновляем нарисованный график
+                    if (miniCharts[`chart-${key}`]) {
+                        const chart = miniCharts[`chart-${key}`];
+                        chart.data.labels = trend.map((_, i) => i);
+                        chart.data.datasets[0].data = trend;
+                        chart.data.datasets[0].borderColor = color;
+                        chart.update();
+                        
+                        // Обновляем цвет тэга в карточке
+                        const card = chart.canvas.closest('.market-card');
+                        if (card) {
+                            const tag = card.querySelector('.tag');
+                            if (tag) {
+                                tag.style.color = color;
+                                tag.style.borderColor = color === '#32d74b' ? 'rgba(50,215,75,0.3)' : 'rgba(255,69,58,0.3)';
+                            }
+                            // Если акция выросла, убираем красный бордер/тень (если он был хардкодно прописан для GAZP/SGZH)
+                            if (last >= first) {
+                                card.style.boxShadow = 'none';
+                            }
+                        }
+                    }
+                }
+            } catch(e) {
+                console.error(`Failed to load MOEX data for ${ticker}`, e);
+            }
+        }
+    }
+
     window.onload = () => {
         setTimeout(typeWriter, 500); 
-        const d = (id, c, t) => new Chart(document.getElementById(id), { type: 'line', data: { labels: [1,2,3,4,5], datasets: [{ data: t, borderColor: c, borderWidth: 3, pointRadius:0, tension:0.4 }] }, options: { plugins:{legend:{display:false}}, scales:{x:{display:false},y:{display:false}}, animation:{duration:1000} }});
         
+        const d = (id, c, t) => {
+            miniCharts[id] = new Chart(document.getElementById(id), { 
+                type: 'line', 
+                data: { labels: t.map((_,i)=>i), datasets: [{ data: t, borderColor: c, borderWidth: 3, pointRadius:0, tension:0.4 }] }, 
+                options: { plugins:{legend:{display:false}}, scales:{x:{display:false},y:{display:false}}, animation:{duration:1000} }
+            });
+        };
+        
+        // Отрисовываем графики с временными данными
         d('chart-ydex', '#32d74b', marketData.ydex.trend); 
         d('chart-ozon', '#32d74b', marketData.ozon.trend);
         d('chart-sber', '#32d74b', marketData.sber.trend); 
@@ -1107,6 +1170,9 @@
         d('chart-seg', '#ff453a', marketData.seg.trend);
         
         calc(); calcGoal(); calcInflation(); handleScroll(); init3DParallax();
+        
+        // Асинхронно загружаем реальные данные Московской Биржи
+        loadRealMarketData();
     };
 </script>
 </body>
