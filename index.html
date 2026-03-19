@@ -181,6 +181,7 @@
         .btn-primary { background: var(--text); color: var(--bg); border: none; }
         .btn:hover { transform: scale(1.03); filter: brightness(1.1); }
 
+        /* ИНПУТЫ И ПОЛЗУНКИ */
         .input-style { 
             width: 100%; padding: 16px; background: var(--input-bg); border: 1.5px solid transparent; 
             color: var(--text); border-radius: 14px; margin: 8px 0; font-size: 1rem; 
@@ -188,6 +189,17 @@
             box-sizing: border-box; 
         }
         .input-style:focus { background: var(--bg-secondary); border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-glow); }
+
+        input[type=range] {
+            -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0 20px;
+        }
+        input[type=range]:focus { outline: none; }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 8px; cursor: pointer; background: var(--input-bg); border-radius: 4px; border: 1px solid var(--card-border);
+        }
+        input[type=range]::-webkit-slider-thumb {
+            height: 24px; width: 24px; border-radius: 50%; background: #fff; cursor: pointer; -webkit-appearance: none; margin-top: -9px; box-shadow: 0 2px 6px rgba(0,0,0,0.3); border: 1px solid #ddd;
+        }
 
         .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
         
@@ -290,6 +302,7 @@
 <div id="content-wrapper">
     <nav id="navbar" style="display:none;">
         <a onclick="go('dashboard')" id="l-dashboard" class="active">Обзор</a>
+        <a onclick="go('timemachine')" id="l-timemachine">Машина времени</a>
         <a onclick="go('safe')" id="l-safe">Без риска</a>
         <a onclick="go('docs')" id="l-docs">Законы</a>
         <a onclick="go('home')" id="l-home">Сложный %</a>
@@ -340,6 +353,11 @@
 
         <h3 class="reveal" style="margin-top: 60px; margin-bottom: 25px; font-size: 1.5rem;">Инструменты</h3>
         <div class="grid-2">
+            <div class="card market-card reveal" onclick="go('timemachine')" style="border-bottom-color: var(--accent);">
+                <div style="font-size:2.2rem; margin-bottom:15px;">⏳</div>
+                <h4>Машина времени</h4>
+                <p style="font-size:0.95rem; margin:0;">Исторический симулятор.</p>
+            </div>
             <div class="card market-card reveal" onclick="go('home')" style="border-bottom-color: var(--accent);">
                 <div style="font-size:2.2rem; margin-bottom:15px;">🧮</div>
                 <h4>Магия процента</h4>
@@ -355,6 +373,51 @@
                 <h4>Риск-профиль</h4>
                 <p style="font-size:0.95rem; margin:0;">Анализ толерантности.</p>
             </div>
+        </div>
+    </section>
+
+    <section id="timemachine" class="page">
+        <div class="reveal">
+            <h1>Машина времени</h1>
+            <p style="margin-bottom: 40px;">Исторический симулятор: что было бы с вашими деньгами, если бы вы инвестировали в прошлом?</p>
+        </div>
+        <div class="card reveal" style="box-shadow: inset 0 2px 0 0 var(--accent);">
+            <div class="grid-2">
+                <div>
+                    <label class="text-muted" style="font-size:0.85rem; font-weight: 500;">Сумма (₽)</label>
+                    <input type="number" id="tm_sum" value="100000" oninput="calcTM()" class="input-style">
+                </div>
+                <div>
+                    <label class="text-muted" style="font-size:0.85rem; font-weight: 500;">Актив</label>
+                    <select id="tm_asset" onchange="calcTM()" class="input-style">
+                        <option value="sber">Сбер (SBER)</option>
+                        <option value="lkoh">Лукойл (LKOH)</option>
+                        <option value="ydex">Яндекс (YDEX)</option>
+                        <option value="usd">Доллар США (USD)</option>
+                    </select>
+                </div>
+            </div>
+            <label class="text-muted" style="font-size:0.85rem; margin-top:15px; display:block; font-weight: 500;">Точка входа (Год)</label>
+            <select id="tm_year" onchange="calcTM()" class="input-style">
+                <option value="2014">2014 (Доллар по 35 ₽)</option>
+                <option value="2018">2018 (Чемпионат мира)</option>
+                <option value="2020">2020 (Кризис COVID-19)</option>
+                <option value="2022">2022 (Февральские события)</option>
+            </select>
+
+            <div class="grid-2" style="margin-top:30px;">
+                <div style="background: rgba(10, 132, 255, 0.08); padding: 25px; border-radius: 20px; text-align: center; border: 1px solid rgba(10, 132, 255, 0.2);">
+                    <small style="color: var(--accent); font-weight: 600; text-transform: uppercase;">Инвестировано в актив</small>
+                    <div id="tm_res_invest" style="font-size: 2.2rem; font-weight: 700; margin-top: 10px; color: var(--text);">0 ₽</div>
+                    <div id="tm_roi" style="color: var(--success); font-weight: 600; margin-top: 5px; font-size: 0.95rem;">+0%</div>
+                </div>
+                <div style="background: rgba(255, 69, 58, 0.08); padding: 25px; border-radius: 20px; text-align: center; border: 1px solid rgba(255, 69, 58, 0.2);">
+                    <small style="color: var(--danger); font-weight: 600; text-transform: uppercase;">Осталось под подушкой</small>
+                    <div id="tm_res_pillow" style="font-size: 2.2rem; font-weight: 700; margin-top: 10px; color: var(--text);">0 ₽</div>
+                    <div id="tm_inf" style="color: var(--danger); font-weight: 600; margin-top: 5px; font-size: 0.95rem;">-0% покупательной способности</div>
+                </div>
+            </div>
+            <canvas id="tmChart" style="margin-top:30px; max-height:200px;"></canvas>
         </div>
     </section>
 
@@ -583,7 +646,45 @@
             <h1>Модельные портфели</h1>
             <p style="margin-bottom: 40px;">Примеры распределения активов (Asset Allocation) для различных риск-профилей на рынке РФ.</p>
         </div>
+
+        <div class="card reveal" style="margin-bottom: 40px; border: 2px solid var(--accent); padding: 40px; box-shadow: inset 0 0 20px rgba(10,132,255,0.05);">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;">
+                <h3 style="margin:0; font-size: 1.6rem;">🎛️ Конструктор портфеля</h3>
+                <span class="tag" style="background: var(--accent); color: #fff; border:none; padding: 8px 16px; font-size: 0.85rem;" id="pb_verdict">Сбалансированный</span>
+            </div>
+            
+            <div class="grid-2" style="align-items: center;">
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span style="font-weight: 600; color: var(--text);">Акции РФ (~25%)</span>
+                        <span id="pb_val_stocks" style="font-weight: 700; color: var(--success);">50%</span>
+                    </div>
+                    <input type="range" id="pb_stocks" min="0" max="100" value="50" oninput="updateBuilder()">
+
+                    <div style="display: flex; justify-content: space-between; margin-top: 15px; margin-bottom: 5px;">
+                        <span style="font-weight: 600; color: var(--text);">Облигации (~16%)</span>
+                        <span id="pb_val_bonds" style="font-weight: 700; color: var(--accent);">40%</span>
+                    </div>
+                    <input type="range" id="pb_bonds" min="0" max="100" value="40" oninput="updateBuilder()">
+
+                    <div style="display: flex; justify-content: space-between; margin-top: 15px; margin-bottom: 5px;">
+                        <span style="font-weight: 600; color: var(--text);">Золото (~10%)</span>
+                        <span id="pb_val_gold" style="font-weight: 700; color: var(--warning);">10%</span>
+                    </div>
+                    <input type="range" id="pb_gold" min="0" max="100" value="10" oninput="updateBuilder()">
+                    
+                    <div style="margin-top: 30px; padding: 25px; background: var(--input-bg); border-radius: 20px; text-align: center;">
+                        <div style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Ожидаемая доходность</div>
+                        <div id="pb_expected" class="gradient-text" style="font-size: 2.5rem; font-weight: 700; margin-top: 10px; letter-spacing: -0.02em;">19.9%</div>
+                    </div>
+                </div>
+                <div style="position: relative; height: 250px; display: flex; align-items: center; justify-content: center;">
+                    <canvas id="builder-pie"></canvas>
+                </div>
+            </div>
+        </div>
         
+        <h3 class="reveal" style="margin-bottom: 20px; font-size: 1.5rem;">Готовые решения</h3>
         <div class="grid-2">
             <div class="card reveal" style="text-align: center;">
                 <span class="tag" style="margin-bottom: 15px;">Защитный</span>
@@ -889,7 +990,7 @@
         if (document.getElementById('l-' + id)) document.getElementById('l-' + id).classList.add('active');
         window.scrollTo({ top: 0, behavior: 'smooth' });
         setTimeout(handleScroll, 100); 
-        if(id === 'portfolios') renderPortfolios();
+        if(id === 'portfolios') { renderPortfolios(); updateBuilder(); }
     }
 
     function showArticle(articleId) {
@@ -900,6 +1001,81 @@
         document.getElementById('l-learn').classList.add('active');
         setTimeout(handleScroll, 100);
     }
+
+    // --- НОВОЕ: МАШИНА ВРЕМЕНИ ---
+    const tmData = {
+        '2014': { sber: 5.2, lkoh: 5.8, ydex: 4.1, usd: 2.7, inf: 0.45 }, 
+        '2018': { sber: 1.8, lkoh: 2.2, ydex: 1.9, usd: 1.5, inf: 0.65 },
+        '2020': { sber: 1.4, lkoh: 1.5, ydex: 1.2, usd: 1.3, inf: 0.75 },
+        '2022': { sber: 2.2, lkoh: 2.5, ydex: 2.0, usd: 1.2, inf: 0.85 }
+    };
+    let tmChartRef;
+    
+    function calcTM() {
+        const sum = parseFloat(document.getElementById('tm_sum').value) || 0;
+        const asset = document.getElementById('tm_asset').value;
+        const year = document.getElementById('tm_year').value;
+        
+        const data = tmData[year];
+        const investRes = sum * data[asset];
+        const pillowRes = sum * data.inf;
+        
+        const roi = ((data[asset] - 1) * 100).toFixed(0);
+        const infLoss = ((1 - data.inf) * 100).toFixed(0);
+
+        document.getElementById('tm_res_invest').innerText = Math.round(investRes).toLocaleString() + ' ₽';
+        document.getElementById('tm_roi').innerText = `+${roi}% (рост + дивы)`;
+        
+        document.getElementById('tm_res_pillow').innerText = Math.round(pillowRes).toLocaleString() + ' ₽';
+        document.getElementById('tm_inf').innerText = `-${infLoss}% покупательной способности`;
+
+        if (tmChartRef) tmChartRef.destroy();
+        tmChartRef = new Chart(document.getElementById('tmChart').getContext('2d'), {
+            type: 'bar',
+            data: { labels: ['В активе', 'Под подушкой'], datasets: [{ data: [investRes, pillowRes], backgroundColor: ['#0a84ff', '#ff453a'], borderRadius: 12 }] },
+            options: { plugins: { legend: { display: false } }, scales: { y: { display: false } }, maintainAspectRatio: false }
+        });
+    }
+
+    // --- НОВОЕ: КОНСТРУКТОР ПОРТФЕЛЯ ---
+    let builderChartRef;
+    function updateBuilder() {
+        let s = parseInt(document.getElementById('pb_stocks').value);
+        let b = parseInt(document.getElementById('pb_bonds').value);
+        let g = parseInt(document.getElementById('pb_gold').value);
+
+        // Нормализация к 100%
+        let total = s + b + g;
+        if (total === 0) { s = 34; b = 33; g = 33; total = 100; } 
+        
+        let normS = Math.round((s / total) * 100);
+        let normB = Math.round((b / total) * 100);
+        let normG = 100 - normS - normB;
+
+        document.getElementById('pb_val_stocks').innerText = normS + '%';
+        document.getElementById('pb_val_bonds').innerText = normB + '%';
+        document.getElementById('pb_val_gold').innerText = normG + '%';
+
+        let expected = (normS * 0.25) + (normB * 0.16) + (normG * 0.10);
+        document.getElementById('pb_expected').innerText = expected.toFixed(1) + '%';
+
+        let verdict = document.getElementById('pb_verdict');
+        if (normS > 60) { verdict.innerText = 'Агрессивный'; verdict.style.background = 'var(--danger)'; }
+        else if (normS >= 30) { verdict.innerText = 'Сбалансированный'; verdict.style.background = 'var(--accent)'; }
+        else { verdict.innerText = 'Консервативный'; verdict.style.background = 'var(--success)'; }
+
+        if(!builderChartRef) {
+            builderChartRef = new Chart(document.getElementById('builder-pie').getContext('2d'), { 
+                type: 'doughnut', 
+                data: { labels: ['Акции', 'Облигации', 'Золото'], datasets: [{ data: [normS, normB, normG], backgroundColor: ['#32d74b', '#0a84ff', '#ffd60a'], borderWidth: 0 }] }, 
+                options: { plugins: { legend: { display: false } }, cutout: '75%', maintainAspectRatio: false, animation: {duration: 0} }
+            });
+        } else {
+            builderChartRef.data.datasets[0].data = [normS, normB, normG];
+            builderChartRef.update();
+        }
+    }
+
 
     let infChartRef, mainChartRef;
     function calcInflation() {
@@ -1170,6 +1346,7 @@
         d('chart-seg', '#ff453a', marketData.seg.trend);
         
         calc(); calcGoal(); calcInflation(); handleScroll(); init3DParallax();
+        calcTM(); updateBuilder(); // Инициализация новых инструментов
         
         // Асинхронно загружаем реальные данные Московской Биржи
         loadRealMarketData();
